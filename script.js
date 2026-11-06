@@ -336,28 +336,28 @@ document.addEventListener("DOMContentLoaded", () => {
             category: "Cinema & Entertainment",
             description: "A modern cinema and movie discovery platform where users can explore films and enjoy a cinematic experience.",
             image: "./image.png",
-            url: "ADD_CINEVERSE_LINK_HERE"
+            url: "https://valentineokedinachi-ux.github.io/cinema-universe-project/"
         },
         {
             name: "Mama Nkechi's Kitchen",
             category: "Food & Restaurant",
             description: "A Nigerian restaurant website celebrating delicious local meals, menus and authentic food experiences.",
             image: "https://tb-static.uber.com/prod/image-proc/processed_images/d236837367eec86f312b607b787812ac/aa13fff7e2466014ca51307be81e7738.jpeg",
-            url: "ADD_MAMA_NKECHI_LINK_HERE"
+            url: "https://valentineokedinachi-ux.github.io/css-group-project/"
         },
         {
             name: "Luxury Jewelry Website",
             category: "E-commerce & Luxury",
             description: "An elegant online jewellery store showcasing premium necklaces, rings and luxury accessories.",
             image: "./image copy.png",
-            url: "ADD_JEWELRY_LINK_HERE"
+            url: "https://valentineokedinachi-ux.github.io/translation-website/"
         },
         {
             name: "Wander Niger",
             category: "Travel & Tourism",
             description: "A Nigerian travel and tourism platform showcasing beautiful destinations and unforgettable experiences.",
             image: "https://static.wixstatic.com/media/cd6132_ead4645321594e67a3e51ebcec7b65b3~mv2.jpeg/v1/fill/w_1000%2Ch_667%2Cal_c%2Cq_90%2Cusm_0.66_1.00_0.01/cd6132_ead4645321594e67a3e51ebcec7b65b3~mv2.jpeg",
-            url: "ADD_WANDER_NIGER_LINK_HERE"
+            url: "https://valentineokedinachi-ux.github.io/wander-niger.com/"
         }
     ];
 
@@ -544,7 +544,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ADD YOUR WHATSAPP NUMBER HERE
     // Use international format without + or spaces.
     // Example: 2348012345678
-    const whatsappNumber = "ADD_YOUR_WHATSAPP_NUMBER";
+    const whatsappNumber = "+2348069160477";
 
     const contactForm = document.getElementById("contact-form");
 
