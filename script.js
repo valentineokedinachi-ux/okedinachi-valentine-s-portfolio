@@ -1,290 +1,304 @@
-
 document.addEventListener("DOMContentLoaded", () => {
 
-    // TYPEWRITER EFFECT
+    /* =========================================
+       REUSABLE TYPEWRITER EFFECT
+    ========================================= */
 
-    const typedName = document.getElementById("typed-name");
+    function createTypewriter(element, names, speed = 110, deleteSpeed = 55, pause = 2000) {
 
-    const names = [
-        "Okedinachi Valentine",
-        "Bossy Val"
-    ];
+        if (!element) return;
 
-    let nameIndex = 0;
-    let characterIndex = 0;
-    let deleting = false;
+        let nameIndex = 0;
+        let characterIndex = 0;
+        let deleting = false;
 
-    function typeWriter() {
+        function type() {
 
-        const currentName = names[nameIndex];
+            const currentName = names[nameIndex];
 
-        if (!deleting) {
+            if (!deleting) {
 
-            // Add one letter at a time
-            characterIndex++;
+                characterIndex++;
 
-            typedName.textContent =
-                currentName.substring(0, characterIndex);
+                element.textContent = currentName.substring(0, characterIndex);
 
-            // When the complete name appears
-            if (characterIndex === currentName.length) {
+                if (characterIndex === currentName.length) {
+                    deleting = true;
+                    setTimeout(type, pause);
+                    return;
+                }
 
-                deleting = true;
+                setTimeout(type, speed);
 
-                setTimeout(typeWriter, 2000);
-                return;
+            } else {
+
+                characterIndex--;
+
+                element.textContent = currentName.substring(0, characterIndex);
+
+                if (characterIndex === 0) {
+                    deleting = false;
+                    nameIndex = (nameIndex + 1) % names.length;
+                    setTimeout(type, 500);
+                    return;
+                }
+
+                setTimeout(type, deleteSpeed);
             }
-
-            setTimeout(typeWriter, 110);
-
-        } else {
-
-            // Remove one letter at a time
-            characterIndex--;
-
-            typedName.textContent =
-                currentName.substring(0, characterIndex);
-
-            // When the name has disappeared
-            if (characterIndex === 0) {
-
-                deleting = false;
-
-                nameIndex = (nameIndex + 1) % names.length;
-
-                setTimeout(typeWriter, 500);
-                return;
-            }
-
-            setTimeout(typeWriter, 55);
         }
+
+        element.textContent = "";
+        type();
     }
 
-    // Start typing after the page loads
-    typedName.textContent = "";
-    typeWriter();
+
+    // HERO TYPEWRITER
+
+    createTypewriter(
+        document.getElementById("typed-name"),
+        [
+            "Okedinachi Valentine",
+            "Bossy Val"
+        ]
+    );
 
 
-    // MOBILE NAVIGATION
+    // FOOTER TYPEWRITER
+
+    createTypewriter(
+        document.getElementById("footer-typed-name"),
+        [
+            "Okedinachi Valentine",
+            "Bossy Val"
+        ],
+        110,
+        55,
+        2200
+    );
+
+
+    /* =========================================
+       MOBILE NAVIGATION
+    ========================================= */
 
     const menuToggle = document.getElementById("menu-toggle");
     const navLinks = document.getElementById("nav-links");
     const navItems = document.querySelectorAll(".nav-link");
 
-    function closeMenu() {
+    if (menuToggle && navLinks) {
 
-        menuToggle.classList.remove("active");
-        navLinks.classList.remove("open");
+        function closeMenu() {
 
-        menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.classList.remove("active");
+            navLinks.classList.remove("open");
 
-        document.body.style.overflow = "";
+            menuToggle.setAttribute("aria-expanded", "false");
+
+            document.body.style.overflow = "";
+        }
+
+        menuToggle.addEventListener("click", () => {
+
+            const isOpen = navLinks.classList.toggle("open");
+
+            menuToggle.classList.toggle("active", isOpen);
+
+            menuToggle.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
+
+            document.body.style.overflow =
+                isOpen ? "hidden" : "";
+
+        });
+
+        navItems.forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        document.addEventListener("keydown", event => {
+
+            if (event.key === "Escape") {
+                closeMenu();
+            }
+
+        });
     }
 
-    menuToggle.addEventListener("click", () => {
 
-        const isOpen = navLinks.classList.toggle("open");
-
-        menuToggle.classList.toggle("active", isOpen);
-
-        menuToggle.setAttribute(
-            "aria-expanded",
-            String(isOpen)
-        );
-
-        document.body.style.overflow =
-            isOpen ? "hidden" : "";
-    });
-
-    navItems.forEach(link => {
-        link.addEventListener("click", closeMenu);
-    });
-
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape") {
-            closeMenu();
-        }
-    });
-
-});
-
-
-
-/* =========================================
-   DEVELOPER CODE SHOWCASE ANIMATION
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================
+       DEVELOPER CODE SHOWCASE
+    ========================================= */
 
     const codeOutput = document.getElementById("code-output");
     const lineNumbers = document.getElementById("line-numbers");
     const editor = document.querySelector(".code-editor");
 
-    if (!codeOutput || !lineNumbers || !editor) return;
+    if (codeOutput && lineNumbers && editor) {
 
-    const developerCode = [
-        "// A little introduction about me",
-        "",
-        "const developer = {",
-        '    name: "Okedinachi Valentine",',
-        '    title: "Creative Web Developer",',
-        '    location: "Enugu, Nigeria",',
-        "",
-        "    technologies: [",
-        '        "HTML",',
-        '        "CSS",',
-        '        "JavaScript",',
-        '        "Git & GitHub"',
-        "    ],",
-        "",
-        '    passion: "Building meaningful digital experiences",',
-        "",
-        "    create: function() {",
-        '        return "Ideas into reality."; ',
-        "    }",
-        "};",
-        "",
-        "console.log(developer);"
-    ].join("\n");
-
-
-    // SIMPLE JAVASCRIPT SYNTAX HIGHLIGHTING
-
-    function highlightCode(code) {
-
-        const escaped = code.replace(/[&<>"]/g, character => {
-            const entities = {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;"
-            };
-
-            return entities[character];
-        });
-
-        const tokenPattern =
-            /(\/\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:const|let|var|return|function|new|this)\b|\b\d+\b|\b(?:console|developer|name|title|location|technologies|passion|create|log)\b)/g;
-
-        return escaped.replace(tokenPattern, token => {
-
-            if (token.startsWith("//")) {
-                return `<span class="code-comment">${token}</span>`;
-            }
-
-            if (token.startsWith('"') || token.startsWith("'")) {
-                return `<span class="code-string">${token}</span>`;
-            }
-
-            if (/^(const|let|var|return|function|new|this)$/.test(token)) {
-                return `<span class="code-keyword">${token}</span>`;
-            }
-
-            if (/^\d+$/.test(token)) {
-                return `<span class="code-number">${token}</span>`;
-            }
-
-            if (token === "console" || token === "log" || token === "create") {
-                return `<span class="code-function">${token}</span>`;
-            }
-
-            return `<span class="code-property">${token}</span>`;
-        });
-    }
+        const developerCode = [
+            "// A little introduction about me",
+            "",
+            "const developer = {",
+            '    name: "Okedinachi Valentine",',
+            '    title: "Creative Web Developer",',
+            '    location: "Enugu, Nigeria",',
+            "",
+            "    technologies: [",
+            '        "HTML",',
+            '        "CSS",',
+            '        "JavaScript",',
+            '        "Git & GitHub"',
+            "    ],",
+            "",
+            '    passion: "Building meaningful digital experiences",',
+            "",
+            "    create: function() {",
+            '        return "Ideas into reality."; ',
+            "    }",
+            "};",
+            "",
+            "console.log(developer);"
+        ].join("\n");
 
 
-    // GENERATE LINE NUMBERS
+        // SYNTAX HIGHLIGHTING
 
-    const totalLines = developerCode.split("\n").length;
+        function highlightCode(code) {
 
-    lineNumbers.innerHTML = Array.from(
-        { length: totalLines },
-        (_, index) => `<span>${index + 1}</span>`
-    ).join("");
+            const escaped = code.replace(/[&<>"]/g, character => {
 
+                const entities = {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;"
+                };
 
-    // TYPE THE CODE
-
-    let character = 0;
-    let animationStarted = false;
-    let typingTimer;
-
-    function typeCode() {
-
-        if (character <= developerCode.length) {
-
-            const currentText = developerCode.substring(0, character);
-
-            codeOutput.innerHTML = highlightCode(currentText);
-
-            character++;
-
-            typingTimer = setTimeout(typeCode, 24);
-
-        } else {
-
-            // Keep the completed code visible
-            clearTimeout(typingTimer);
-        }
-    }
-
-
-    // START WHEN THE EDITOR ENTERS THE SCREEN
-
-    function startCodeAnimation() {
-
-        if (animationStarted) return;
-
-        animationStarted = true;
-
-        const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-        if (reducedMotion) {
-            codeOutput.innerHTML = highlightCode(developerCode);
-            return;
-        }
-
-        typeCode();
-    }
-
-
-    if ("IntersectionObserver" in window) {
-
-        const editorObserver = new IntersectionObserver(entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-
-                    startCodeAnimation();
-                    editorObserver.disconnect();
-
-                }
+                return entities[character];
 
             });
 
-        }, {
-            threshold: 0.25
-        });
+            const tokenPattern =
+                /(\/\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:const|let|var|return|function|new|this)\b|\b\d+\b|\b(?:console|developer|name|title|location|technologies|passion|create|log)\b)/g;
 
-        editorObserver.observe(editor);
+            return escaped.replace(tokenPattern, token => {
 
-    } else {
+                if (token.startsWith("//")) {
+                    return `<span class="code-comment">${token}</span>`;
+                }
 
-        startCodeAnimation();
+                if (token.startsWith('"') || token.startsWith("'")) {
+                    return `<span class="code-string">${token}</span>`;
+                }
+
+                if (/^(const|let|var|return|function|new|this)$/.test(token)) {
+                    return `<span class="code-keyword">${token}</span>`;
+                }
+
+                if (/^\d+$/.test(token)) {
+                    return `<span class="code-number">${token}</span>`;
+                }
+
+                if (["console", "log", "create"].includes(token)) {
+                    return `<span class="code-function">${token}</span>`;
+                }
+
+                return `<span class="code-property">${token}</span>`;
+
+            });
+        }
+
+
+        // GENERATE LINE NUMBERS
+
+        const totalLines = developerCode.split("\n").length;
+
+        lineNumbers.innerHTML = Array.from(
+            { length: totalLines },
+            (_, index) => `<span>${index + 1}</span>`
+        ).join("");
+
+
+        // TYPE THE CODE
+
+        let character = 0;
+        let animationStarted = false;
+
+        function typeCode() {
+
+            if (character <= developerCode.length) {
+
+                const currentText = developerCode.substring(0, character);
+
+                codeOutput.innerHTML = highlightCode(currentText);
+
+                character++;
+
+                setTimeout(typeCode, 24);
+
+            }
+        }
+
+
+        // START WHEN EDITOR ENTERS VIEW
+
+        function startCodeAnimation() {
+
+            if (animationStarted) return;
+
+            animationStarted = true;
+
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)"
+            ).matches;
+
+            if (reducedMotion) {
+
+                codeOutput.innerHTML = highlightCode(developerCode);
+
+                return;
+            }
+
+            typeCode();
+        }
+
+
+        if ("IntersectionObserver" in window) {
+
+            const editorObserver = new IntersectionObserver(entries => {
+
+                entries.forEach(entry => {
+
+                    if (entry.isIntersecting) {
+
+                        startCodeAnimation();
+
+                        editorObserver.disconnect();
+
+                    }
+
+                });
+
+            }, {
+                threshold: 0.25
+            });
+
+            editorObserver.observe(editor);
+
+        } else {
+
+            startCodeAnimation();
+
+        }
 
     }
 
-});
 
-
-/* =========================================
-   SECTION ENTRANCE ANIMATIONS
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================
+       SECTION ENTRANCE ANIMATIONS
+    ========================================= */
 
     const sections = document.querySelectorAll(".section-reveal");
 
@@ -320,17 +334,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-});
 
-
-
-/* =========================================
-   FEATURED PROJECTS DATA & RENDERING
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================
+       FEATURED PROJECTS
+    ========================================= */
 
     const projects = [
+
         {
             name: "Cine-Verse",
             category: "Cinema & Entertainment",
@@ -338,6 +348,7 @@ document.addEventListener("DOMContentLoaded", () => {
             image: "./image.png",
             url: "https://valentineokedinachi-ux.github.io/cinema-universe-project/"
         },
+
         {
             name: "Mama Nkechi's Kitchen",
             category: "Food & Restaurant",
@@ -345,6 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
             image: "https://tb-static.uber.com/prod/image-proc/processed_images/d236837367eec86f312b607b787812ac/aa13fff7e2466014ca51307be81e7738.jpeg",
             url: "https://valentineokedinachi-ux.github.io/css-group-project/"
         },
+
         {
             name: "Luxury Jewelry Website",
             category: "E-commerce & Luxury",
@@ -352,6 +364,7 @@ document.addEventListener("DOMContentLoaded", () => {
             image: "./image copy.png",
             url: "https://valentineokedinachi-ux.github.io/translation-website/"
         },
+
         {
             name: "Wander Niger",
             category: "Travel & Tourism",
@@ -359,81 +372,69 @@ document.addEventListener("DOMContentLoaded", () => {
             image: "https://static.wixstatic.com/media/cd6132_ead4645321594e67a3e51ebcec7b65b3~mv2.jpeg/v1/fill/w_1000%2Ch_667%2Cal_c%2Cq_90%2Cusm_0.66_1.00_0.01/cd6132_ead4645321594e67a3e51ebcec7b65b3~mv2.jpeg",
             url: "https://valentineokedinachi-ux.github.io/wander-niger.com/"
         }
+
     ];
+
 
     const projectsGrid = document.getElementById("projects-grid");
 
-    if (!projectsGrid) return;
+    if (projectsGrid) {
 
-    projectsGrid.innerHTML = projects.map((project, index) => `
-        <article class="project-card">
+        projectsGrid.innerHTML = projects.map(project => `
 
-            <div class="project-image-wrap">
-                <img
-                    src="${project.image}"
-                    alt="${project.name} project preview"
-                    class="project-image"
-                    loading="lazy"
-                >
-            </div>
+            <article class="project-card">
 
-            <div class="project-content">
-                <span class="project-category">
-                    ${project.category}
-                </span>
+                <div class="project-image-wrap">
 
-                <h3>${project.name}</h3>
+                    <img
+                        src="${project.image}"
+                        alt="${project.name} project preview"
+                        class="project-image"
+                        loading="lazy"
+                    >
 
-                <p>${project.description}</p>
+                </div>
 
-                <a
-                    href="${project.url.startsWith('ADD_') ? '#' : project.url}"
-                    class="project-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    data-project-index="${index}"
-                >
-                    View Project
-                    <i class="ri-arrow-right-up-line"></i>
-                </a>
-            </div>
+                <div class="project-content">
 
-        </article>
-    `).join("");
+                    <span class="project-category">
+                        ${project.category}
+                    </span>
 
-    // Handle project links
-    projectsGrid.addEventListener("click", (event) => {
-        const link = event.target.closest(".project-link");
+                    <h3>${project.name}</h3>
 
-        if (!link) return;
+                    <p>${project.description}</p>
 
-        const projectIndex = Number(link.dataset.projectIndex);
-        const project = projects[projectIndex];
+                    <a
+                        href="${project.url}"
+                        class="project-link"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        View Project
+                        <i class="ri-arrow-right-up-line"></i>
+                    </a>
 
-        if (project.url.startsWith("ADD_")) {
-            event.preventDefault();
-            alert("Add the deployed project URL in the projects array inside script.js first.");
-        }
-    });
+                </div>
 
-});
+            </article>
+
+        `).join("");
+
+    }
 
 
-
-/* =========================================
-   ANIMATED SKILLS & TECH STACK
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
+    /* =========================================
+       ANIMATED SKILLS & TECH STACK
+    ========================================= */
 
     const technologies = [
-        // PROGRAMMING LANGUAGES & WEB
+
         { name: "HTML5", slug: "html5" },
         { name: "CSS3", slug: "css" },
         { name: "JavaScript", slug: "javascript" },
         { name: "TypeScript", slug: "typescript" },
 
-        // FRAMEWORKS & STYLING
         { name: "Tailwind CSS", slug: "tailwindcss" },
         { name: "React", slug: "react" },
         { name: "Next.js", slug: "nextdotjs" },
@@ -441,203 +442,158 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Node.js", slug: "nodedotjs" },
         { name: "Express.js", slug: "express" },
 
-        // DEVELOPMENT TOOLS
         { name: "Git", slug: "git" },
         { name: "GitHub", slug: "github" },
         { name: "VS Code", slug: "vscode" },
         { name: "npm", slug: "npm" },
-        
         { name: "Chrome DevTools", slug: "googlechrome" },
-        
 
-        // AI TOOLS
         { name: "Claude", slug: "claude" },
-    
         { name: "Google Gemini", slug: "googlegemini" },
         { name: "Kimi", slug: "kimi" },
         { name: "GitHub Copilot", slug: "githubcopilot" },
-        { name: "Perplexity", slug: "perplexity" },
+        { name: "Perplexity", slug: "perplexity" }
 
-       
     ];
+
 
     const firstRow = document.getElementById("tech-chain-one");
     const secondRow = document.getElementById("tech-chain-two");
 
-    if (!firstRow || !secondRow) return;
 
-    // Split technologies between the two rows
-    const middle = Math.ceil(technologies.length / 2);
+    if (firstRow && secondRow) {
 
-    const firstGroup = technologies.slice(0, middle);
-    const secondGroup = technologies.slice(middle);
+        const middle = Math.ceil(technologies.length / 2);
 
-    // Create a logo item
-    function createTechItem(tech) {
-        const item = document.createElement("div");
-        item.className = "tech-logo-item";
-        item.title = tech.name;
+        const firstGroup = technologies.slice(0, middle);
+        const secondGroup = technologies.slice(middle);
 
-        const logo = document.createElement("img");
-        // Dedicated logo sources for brands that need them
-const customLogos = {
-    
 
-    "VS Code": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
-};
+        // CREATE TECHNOLOGY ITEMS
 
-logo.src = customLogos[tech.name]
-    || `https://cdn.simpleicons.org/${tech.slug}`;
-        logo.alt = `${tech.name} logo`;
-        logo.loading = "lazy";
+        function createTechItem(tech) {
 
-        const name = document.createElement("span");
-        name.textContent = tech.name;
+            const item = document.createElement("div");
 
-        item.appendChild(logo);
-        item.appendChild(name);
+            item.className = "tech-logo-item";
+            item.title = tech.name;
 
-        return item;
+            const logo = document.createElement("img");
+
+            const customLogos = {
+
+                "VS Code": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
+
+            };
+
+            logo.src = customLogos[tech.name] ||
+                `https://cdn.simpleicons.org/${tech.slug}`;
+
+            logo.alt = `${tech.name} logo`;
+            logo.loading = "lazy";
+
+            const name = document.createElement("span");
+
+            name.textContent = tech.name;
+
+            item.appendChild(logo);
+            item.appendChild(name);
+
+            return item;
+        }
+
+
+        // BUILD INFINITE MARQUEE
+
+        function buildMarquee(container, items, direction) {
+
+            container.classList.add(
+                direction === "left"
+                    ? "tech-chain-left"
+                    : "tech-chain-right"
+            );
+
+            const groupOne = document.createElement("div");
+            groupOne.className = "tech-group";
+
+            const groupTwo = document.createElement("div");
+            groupTwo.className = "tech-group";
+
+            groupTwo.setAttribute("aria-hidden", "true");
+
+            items.forEach(tech => {
+
+                groupOne.appendChild(createTechItem(tech));
+
+                groupTwo.appendChild(createTechItem(tech));
+
+            });
+
+            container.appendChild(groupOne);
+            container.appendChild(groupTwo);
+
+        }
+
+
+        // OPPOSITE ANIMATION DIRECTIONS
+
+        buildMarquee(firstRow, firstGroup, "left");
+
+        buildMarquee(secondRow, secondGroup, "right");
+
     }
 
-    // Build a duplicated sequence for seamless animation
-    function buildMarquee(container, items, direction) {
 
-        container.classList.add(
-            direction === "left"
-                ? "tech-chain-left"
-                : "tech-chain-right"
-        );
+    /* =========================================
+       CONTACT FORM — WHATSAPP INTEGRATION
+    ========================================= */
 
-        const groupOne = document.createElement("div");
-        groupOne.className = "tech-group";
-
-        const groupTwo = document.createElement("div");
-        groupTwo.className = "tech-group";
-        groupTwo.setAttribute("aria-hidden", "true");
-
-        items.forEach(tech => {
-            groupOne.appendChild(createTechItem(tech));
-            groupTwo.appendChild(createTechItem(tech));
-        });
-
-        container.appendChild(groupOne);
-        container.appendChild(groupTwo);
-    }
-
-    // First row: right to left
-    buildMarquee(firstRow, firstGroup, "left");
-
-    // Second row: left to right
-    buildMarquee(secondRow, secondGroup, "right");
-
-});
-
-
-
-/* =========================================
-   CONTACT FORM — WHATSAPP INTEGRATION
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    // ADD YOUR WHATSAPP NUMBER HERE
-    // Use international format without + or spaces.
-    // Example: 2348012345678
-    const whatsappNumber = "+2348069160477";
+    const whatsappNumber = "2348069160477";
 
     const contactForm = document.getElementById("contact-form");
 
     if (contactForm) {
-        contactForm.addEventListener("submit", (event) => {
+
+        contactForm.addEventListener("submit", event => {
+
             event.preventDefault();
 
             const name = document.getElementById("visitor-name").value.trim();
+
             const email = document.getElementById("visitor-email").value.trim();
+
             const message = document.getElementById("visitor-message").value.trim();
 
+
             if (!name || !email || !message) {
+
                 alert("Please complete all the fields.");
+
                 return;
             }
 
-            if (whatsappNumber.startsWith("ADD_")) {
-                alert("Please add your WhatsApp number in script.js first.");
-                return;
-            }
 
             const whatsappMessage =
+
                 `Hello Okedinachi Valentine!\n\n` +
                 `My name is: ${name}\n` +
                 `My email: ${email}\n\n` +
                 `My message:\n${message}`;
 
+
             const whatsappURL =
+
                 `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
-            window.open(whatsappURL, "_blank", "noopener,noreferrer");
+
+            window.open(
+                whatsappURL,
+                "_blank",
+                "noopener,noreferrer"
+            );
+
         });
+
     }
-
-});
-
-
-/* =========================================
-   FOOTER TYPEWRITER ANIMATION
-========================================= */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const footerName = document.getElementById("footer-typed-name");
-
-    if (!footerName) return;
-
-    const names = [
-        "Okedinachi Valentine",
-        "Bossy Val"
-    ];
-
-    let nameIndex = 0;
-    let characterIndex = 0;
-    let deleting = false;
-
-    function footerTypeWriter() {
-
-        const currentName = names[nameIndex];
-
-        if (!deleting) {
-
-            characterIndex++;
-
-            footerName.textContent =
-                currentName.substring(0, characterIndex);
-
-            if (characterIndex === currentName.length) {
-                deleting = true;
-                setTimeout(footerTypeWriter, 2200);
-                return;
-            }
-
-            setTimeout(footerTypeWriter, 110);
-
-        } else {
-
-            characterIndex--;
-
-            footerName.textContent =
-                currentName.substring(0, characterIndex);
-
-            if (characterIndex === 0) {
-                deleting = false;
-                nameIndex = (nameIndex + 1) % names.length;
-                setTimeout(footerTypeWriter, 500);
-                return;
-            }
-
-            setTimeout(footerTypeWriter, 55);
-        }
-    }
-
-    footerTypeWriter();
 
 });
